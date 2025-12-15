@@ -1,3 +1,6 @@
+# <><><><><><><><><><><><><><><><><>
+# IMPORTS
+# <><><><><><><><><><><><><><><><><>
 import time, tkinter as tk
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -8,32 +11,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 
-def type_comment(driver, text, timeout=15):
-    comment_box = (By.XPATH, "/html/body/div[5]/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/div/textarea")
-    wait = WebDriverWait(driver, timeout)
-    try:
-        driver.switch_to.default_content()
-    except Exception:
-        pass
-
-    tries = 3
-    for _ in range(tries):
-        try:
-            box = wait.until(EC.presence_of_element_located(comment_box))
-            wait.until(EC.element_to_be_clickable(comment_box))
-            driver.execute_script("arguments[0].scrollIntoView({block:'center'});", box)
-            box.click()
-            box.send_keys(text)
-            time.sleep(3)
-            box.send_keys(Keys.RETURN)
-            return
-        except StaleElementReferenceException:
-            continue
-    raise TimeoutException("Could not type comment due to repeated stale elements.")
-
 def comment_click(username, password, comment, times):
+    '''
+    Initializes the webdriver and pulls the instagram site.
+    Uses given arguments to pass the login screen and prepares
+    the post feed to be clicked by the type_comment function.
+    All arguments should be passed as strings
+    '''
     opts = Options()
-    # opts.add_argument("--headless=new")  # This makes the program run without a window, less fun but saves power.
     service = Service()
     driver = webdriver.Chrome(service=service, options=opts)
     ### LOGIN ###
@@ -63,7 +48,40 @@ def comment_click(username, password, comment, times):
         type_comment(driver, comment)
         time.sleep(5)
 
+def type_comment(driver, text, timeout=15):
+    '''
+    Waits for the dynamic post box to load and tries multiple times to access the text box at which
+    point it sends the keys specified by whatever string is passed as 'text'. The default timeout is
+    set to 15 seconds but can be adjusted.
+    The driver argument should be the driver assigned in the comment_click function for continuity.
+    '''
+    comment_box = (By.XPATH, "/html/body/div[5]/div[1]/div/div[3]/div/div/div/div/div[2]/div/article/div/div[2]/div/div/div[2]/section[3]/div/form/div/textarea")
+    wait = WebDriverWait(driver, timeout)
+    try:
+        driver.switch_to.default_content()
+    except Exception:
+        pass
+
+    tries = 3
+    for _ in range(tries):
+        try:
+            box = wait.until(EC.presence_of_element_located(comment_box))
+            wait.until(EC.element_to_be_clickable(comment_box))
+            driver.execute_script("arguments[0].scrollIntoView({block:'center'});", box)
+            box.click()
+            box.send_keys(text)
+            time.sleep(3)
+            box.send_keys(Keys.RETURN)
+            return
+        except StaleElementReferenceException:
+            continue
+    raise TimeoutException("Could not type comment due to repeated stale elements.")
+
 def user_input():
+    '''
+    Launches the tkinter window and creates the four input boxes which act as the user interface.
+    Returns all of the user input as a tuple organized username, password, text, times to comment.
+    '''
     root = tk.Tk()
     root.geometry("300x400")
     root.title("Instagram Comment Bot v0.1")
