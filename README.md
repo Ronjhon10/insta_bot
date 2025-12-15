@@ -14,9 +14,7 @@ INSTRUCTIONS
 
 2: Ensure you have the dependencies installed, such as the Selenium package and Tkinter.
 
-- Selenium 4.6+ will automatically fetch a driver for your specified browser, so none needs to be manually installed. However, if you encounter issues,
-
-- you may need to install a driver such as ChromeDriver and provide the specific path for Selenium to locate it.
+- Selenium 4.6+ will automatically fetch a driver for your specified browser, so none needs to be manually installed. However, if you encounter issues, you may need to install a driver such as ChromeDriver and provide the specific path for Selenium to locate it.
 
 - The program currently uses ChromeDriver and Chromium, but Firefox is also available.
 
